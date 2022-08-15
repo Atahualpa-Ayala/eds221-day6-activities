@@ -1,0 +1,50 @@
+---
+title: "lobster_exploration"
+author: "Atahualpa Ayala"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(here)
+library(janitor)
+```
+
+lobsters \<- read_csv(here("data","Lobster_Abundance_All_Years_20210412.csv"), na = c("-99999", " ")) %\>%
+
+clean_names()
+
+```{r}
+lobsters <- read_csv(here("data","Lobster_Abundance_All_Years_20210412.csv"), na = c("-99999", " ")) %>% 
+  clean_names()%>%
+  uncount(count)
+
+
+
+```
+
+Count made more row when one row it is one observation of lobsters
+
+
+###Find counts and mean sizes by site & year
+```{r}
+lobsters_summ <- lobsters |>
+  group_by(site, year) |> 
+  select(site, year, size_mm) |>
+  summarize(n(),  na.rm = TRUE, mean(size_mm)) |>
+  rename( total_lobsters_observed = "n()" ,
+         mean_lengths = "mean(size_mm)")
+
+
+ggplot(lobsters_summ,  aes(x = year, y= total_lobsters_observed)) + 
+          geom_line(aes(color=site)) +
+          facet_wrap(~site)
+
+```
+
+```{r}
+
+```
+
